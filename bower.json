@@ -1,0 +1,19 @@
+{
+  "name": "map-app",
+  "version": "0.0.0",
+  "authors": [
+    "Tyler Morgan <tyler@tylermorgan.me>"
+  ],
+  "description": "gMap App for Udacity Nanodegree",
+  "main": "index.html",
+  "license": "MIT",
+  "homepage": "http://www.tylermorgan.me/map-app",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
