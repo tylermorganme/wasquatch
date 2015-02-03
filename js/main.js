@@ -2,25 +2,129 @@
 // feature. People can enter geographical searches. The search box will return a
 // pick list containing a mix of places and predicted search terms.
 
+var imgURLstr = 'https://[%farm%].staticflickr.com/[%server%]/[%id%]_[%sercret%].jpg';
+var apiURL = 'https://api.flickr.com/services/rest';
+$.ajax({
+	url: apiURL,
+	type: 'GET',
+	data: {
+		method: 'flickr.photos.search',
+		format: 'json',
+		lat: 48.858844,
+		lng: 2.294351,
+		api_key: '77557c7eaccf5752d7dbe6a356f98f36'
+	},
+	success: function(response) {
+		console.log(response);
+	}
+});
+
+var testLocs = [
+	{
+		title: 'Space Needle',
+		lat:47.6204,
+		lng:-122.3491
+	},
+	{
+		title: 'City Center',
+		lat: 47.6097,
+		lng: -122.3331
+	},
+	{
+		title: 'Airport',
+		lat: 47.4489,
+		lng: -122.3094
+	},
+	{
+		title: 'Green Lake',
+		lat: 47.6779,
+		lng: -122.3369
+	}
+];
+
+var ViewModel = function(){
+	var self = this;
+	this.markers = ko.observableArray([]);
+	this.mapOptions = {
+		center: {lat: 47.6097, lng: -122.3331},
+		zoom: 11,
+		mapTypeId: google.maps.MapTypeId.ROADMAP,
+		panControl: false,
+		zoomControl: true,
+		mapTypeControl: true,
+		scaleControl: true,
+		streetViewControl: true,
+		overviewMapControl: true,
+		zoomControlOptions: {
+			style: google.maps.ZoomControlStyle.DEFAULT
+		}
+	}
+
+	this.map = new google.maps.Map(document.getElementById('map-canvas'),self.mapOptions);
+
+	this.searchTerm = ko.observable('test');
+
+	this.autoCompService = new google.maps.places.AutocompleteService();
+
+	// Add a marker to the map and push to the array.
+	this.addMarker = function(title, lat, lng) {
+	  var marker = new google.maps.Marker({
+	    title: title,
+	    position: new google.maps.LatLng(lat,lng),
+	    animation: google.maps.Animation.DROP
+	  });
+	  self.markers().push(marker);
+	}
+
+	this.setMarkers = function(markers) {
+		var length = markers.length;
+		for (var i = 0; i < length; i++){
+			var marker = markers[i];
+			self.addMarker(marker.title, marker.lat, marker.lng)
+		}
+	}
+
+	// Sets the map on all markers in the array.
+	this.setAllMap = function (map) {
+		var length = self.markers().length;
+		for (var i = 0; i < length; i++) {
+			self.markers()[i].setMap(map);
+		}
+	}
+
+	// Removes the markers from the map, but keeps them in the array.
+	this.clearMarkers = function() {
+	  this.setAllMap(null);
+	}
+
+	// Shows any markers currently in the array.
+	this.showMarkers = function() {
+	  this.setAllMap(map);
+	}
+
+	// Deletes all markers in the array by removing references to them.
+	this.deleteMarkers = function() {
+	  this.clearMarkers();
+	  self.markers([]);
+	}
+
+	this.setMarkers(testLocs);
+	this.setAllMap(self.map);
+
+	this.recommendations = ko.observableArray();
+
+	this.searchTerm.subscribe(function(term) {
+	    self.autoCompService.getQueryPredictions({ input: term}, function(recs){
+	    	if (status == google.maps.places.PlacesServiceStatus.OK) {
+		    	recs.length!==0?self.recommendations(recs):self.recommendations([]);
+			}
+			});
+	});
+};
+
+ko.applyBindings(new ViewModel());
+
 function initialize() {
-
-  var markers = [];
-  var map = new google.maps.Map(document.getElementById('map-canvas'), {
-    mapTypeId: google.maps.MapTypeId.ROADMAP
-  });
-
-  var defaultBounds = new google.maps.LatLngBounds(
-      new google.maps.LatLng(47.6097, -122.3331),
-      new google.maps.LatLng(47.6097, -122.3331));
-  map.fitBounds(defaultBounds);
-
-  // Create the search box and link it to the UI element.
-  var input = /** @type {HTMLInputElement} */(
-      document.getElementById('pac-input'));
-  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-
-  var searchBox = new google.maps.places.SearchBox(
-    /** @type {HTMLInputElement} */(input));
 
   // Listen for the event fired when the user selects an item from the
   // pick list. Retrieve the matching places for that item.
@@ -51,7 +155,8 @@ function initialize() {
         map: map,
         icon: image,
         title: place.name,
-        position: place.geometry.location
+        position: place.geometry.location,
+        animation: google.maps.Animation.DROP
       });
 
       markers.push(marker);
@@ -61,13 +166,4 @@ function initialize() {
 
     map.fitBounds(bounds);
   });
-
-  // Bias the SearchBox results towards places that are within the bounds of the
-  // current map's viewport.
-  google.maps.event.addListener(map, 'bounds_changed', function() {
-    var bounds = map.getBounds();
-    searchBox.setBounds(bounds);
-  });
-}
-
-google.maps.event.addDomListener(window, 'load', initialize);
+};
