@@ -29,8 +29,8 @@
         <form>
             <input id="search-box" type="search" data-bind="textInput: searchTerm">
         </form>
-        <ul id="autocomplete" data-bind="foreach: recommendations">
-            <li data-bind="text: description"></li>
+        <ul id="autocomplete" data-bind="foreach: locations">
+            <li data-bind="text: county"></li>
         </ul>
         <script src="bower_components/knockoutjs/dist/knockout.js"></script>
         <script src="bower_components/jQuery/dist/jquery.js"></script>

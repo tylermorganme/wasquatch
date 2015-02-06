@@ -250,7 +250,7 @@ var model = {
 	sightings: 24
 	}
 	],
-	fuzzyCompare: function fuzzyCompare(search, inStr) {
+	fuzzyCompare: function(search, inStr) {
 		var lengthSearch = search.length;
 		var lengthInStr = inStr.length;
 		var found;
@@ -266,7 +266,7 @@ var model = {
 		}
 		return true;
 	},
-	getFuzzyMatches: function getFuzzyMatches(search) {
+	getFuzzyMatches: function(search) {
 		if (!search) return model.countySightings;
 		var length = model.countySightings.length;
 		var result = [];
@@ -281,7 +281,9 @@ var model = {
 
 var ViewModel = function(){
 	var self = this;
-	this.markers = ko.observableArray([]);
+
+	self.locations = ko.observableArray([]);
+
 	this.mapOptions = {
 		center: {lat: 47.5000, lng: -120.5000},
 		zoom: 7,
@@ -297,27 +299,27 @@ var ViewModel = function(){
 		}
 	}
 
-	this.map = new google.maps.Map(document.getElementById('map-canvas'),self.mapOptions);
+	self.map = new google.maps.Map(document.getElementById('map-canvas'),self.mapOptions);
 
-	this.searchTerm = ko.observable('test');
-
-	this.autoCompService = new google.maps.places.AutocompleteService();
+	self.searchTerm = ko.observable();
 
 	// Add a marker to the map and push to the array.
-	this.addMarker = function(title, lat, lng) {
-	  var marker = new google.maps.Marker({
-	    title: title,
-	    position: new google.maps.LatLng(lat,lng),
-	    animation: google.maps.Animation.DROP
-	  });
-	  self.markers().push(marker);
+	self.Location = function(title, lat, lng) {
+	  	this.county = title;
+	  	this.marker = new google.maps.Marker({
+		    position: new google.maps.LatLng(lat,lng),
+		    visible: true,
+		    map: self.map,
+		    animation: google.maps.Animation.DROP
+	  		});
 	}
 
-	this.setMarkers = function(markers) {
-		var length = markers.length;
+	this.setLocations = function(locations) {
+		var length = locations.length;
+		var location;
 		for (var i = 0; i < length; i++){
-			var marker = markers[i];
-			self.addMarker(marker.title, marker.lat, marker.lng)
+			location = locations[i];
+			self.locations.push(new self.Location(location.county, location.lat, location.lng));
 		}
 	}
 
@@ -345,17 +347,17 @@ var ViewModel = function(){
 	  self.markers([]);
 	}
 
-	this.setMarkers(model.countySightings);
-	this.setAllMap(self.map);
-
-	this.recommendations = ko.observableArray();
+	this.setLocations(model.countySightings);
 
 	this.searchTerm.subscribe(function(term) {
-	    self.autoCompService.getQueryPredictions({ input: term}, function(recs){
-	    	if (status == google.maps.places.PlacesServiceStatus.OK) {
-		    	recs.length!==0?self.recommendations(recs):self.recommendations([]);
-			}
-			});
+		var length = self.locations().length;
+		var location;
+		for (var i = 0; i < length; i++) {
+			self
+			.locations()[i]
+			.marker
+			.setVisible(model.fuzzyCompare(term, self.locations()[i].county));
+		}
 	});
 };
 
