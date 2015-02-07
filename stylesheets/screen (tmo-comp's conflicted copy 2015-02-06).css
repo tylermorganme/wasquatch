@@ -7111,10 +7111,12 @@ html, body {
 
 /* line 16, ../sass/screen.scss */
 #map-canvas {
+  box-sizing: border-box;
+  padding-left: 200px;
   width: 100%;
   height: 100%; }
 
-/* line 21, ../sass/screen.scss */
+/* line 23, ../sass/screen.scss */
 .controls {
   margin-top: 16px;
   border: 1px solid transparent;
@@ -7125,7 +7127,7 @@ html, body {
   outline: none;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3); }
 
-/* line 32, ../sass/screen.scss */
+/* line 34, ../sass/screen.scss */
 #pac-input {
   background-color: #fff;
   padding: 0 11px 0 13px;
@@ -7135,7 +7137,7 @@ html, body {
   font-weight: 300;
   text-overflow: ellipsis; }
 
-/* line 44, ../sass/screen.scss */
+/* line 46, ../sass/screen.scss */
 #pac-input:focus {
   border-color: #4d90fe;
   margin-left: -1px;
@@ -7143,27 +7145,27 @@ html, body {
   /* Regular padding-left + 1. */
   width: 401px; }
 
-/* line 51, ../sass/screen.scss */
+/* line 53, ../sass/screen.scss */
 .pac-container {
   font-family: Roboto; }
 
-/* line 55, ../sass/screen.scss */
+/* line 57, ../sass/screen.scss */
 #type-selector {
   color: #fff;
   background-color: #4d90fe;
   padding: 5px 11px 0px 11px; }
 
-/* line 61, ../sass/screen.scss */
+/* line 63, ../sass/screen.scss */
 #type-selector label {
   font-family: Roboto;
   font-size: 13px;
   font-weight: 300; }
 
-/* line 67, ../sass/screen.scss */
+/* line 69, ../sass/screen.scss */
 #target {
   width: 345px; }
 
-/* line 71, ../sass/screen.scss */
+/* line 73, ../sass/screen.scss */
 form {
   position: absolute;
   top: 0;
@@ -7171,13 +7173,13 @@ form {
   width: 100%;
   height: 50px; }
 
-/* line 79, ../sass/screen.scss */
+/* line 81, ../sass/screen.scss */
 #search-term {
   width: 100%;
   height: 100%;
   text-align: center; }
 
-/* line 85, ../sass/screen.scss */
+/* line 87, ../sass/screen.scss */
 #list-view {
   box-sizing: border-box;
   position: fixed;
@@ -7186,7 +7188,7 @@ form {
   height: 100%;
   width: 200px; }
 
-/* line 94, ../sass/screen.scss */
+/* line 96, ../sass/screen.scss */
 #location-list {
   padding-top: 50px;
   position: absolute;
@@ -7197,7 +7199,7 @@ form {
   width: 100%;
   overflow-y: auto;
   overflow-x: hidden; }
-  /* line 104, ../sass/screen.scss */
+  /* line 106, ../sass/screen.scss */
   #location-list li {
     width: 100%;
     line-height: 2em;

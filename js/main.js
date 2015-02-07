@@ -19,6 +19,19 @@ $.ajax({
 	}
 });
 
+var $list = $('#location-list');
+var $window = $(window);
+
+$(function() {
+	resizeList();
+	$window.resize(resizeList);
+});
+
+var resizeList = function() {
+	$list.height($window.height() - 50);
+	$list.css({"padding-top": 0, "top": "50px"});
+}
+
 var model = {
 	countySightings: [
 	{

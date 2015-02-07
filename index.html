@@ -26,12 +26,16 @@
         </form> -->
         <!-- <input id="pac-input" class="controls" type="text" placeholder="Search Box"> -->
         <div id="map-canvas"></div>
-        <form>
-            <input id="search-box" type="search" data-bind="textInput: searchTerm">
-        </form>
-        <ul id="autocomplete" data-bind="foreach: locations">
-            <li data-bind="text: county"></li>
-        </ul>
+        <div id="list-view">
+            <ul id="location-list" data-bind="foreach: locations">
+                <li data-bind="text: county"></li>
+            </ul>
+            <form>
+                <input id="search-term" type="search" placeholder="ENTER FILTER HERE" data-bind="textInput: searchTerm">
+            </form>
+        </div>
+
+
         <script src="bower_components/knockoutjs/dist/knockout.js"></script>
         <script src="bower_components/jQuery/dist/jquery.js"></script>
         <script src="js/main.js"></script>
