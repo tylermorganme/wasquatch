@@ -10,11 +10,9 @@ http://www.meetup.com/meetup_api/docs/2/open_events/
 
 https://developers.google.com/maps/documentation/javascript/examples/marker-remove
 
+How to use the response from the API
+https://www.flickr.com/services/api/response.json.html
+
 http://www.bfro.net/GDB/newadd.asp
 
-map-app
-Key:
-77557c7eaccf5752d7dbe6a356f98f36
-
-Secret:
-203b9cee39f2ee83
+TODO:Create a news reader for bigfoot news.

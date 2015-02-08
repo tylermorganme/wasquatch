@@ -28,7 +28,7 @@
         <div id="map-canvas"></div>
         <div id="list-view">
             <ul id="location-list" data-bind="foreach: locations">
-                <li data-bind="text: county"></li>
+                <li data-bind="visible: visible, text: county, click: getLocationData"></li>
             </ul>
             <form>
                 <input id="search-term" type="search" placeholder="ENTER FILTER HERE" data-bind="textInput: searchTerm">

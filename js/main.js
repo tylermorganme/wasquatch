@@ -3,33 +3,26 @@
 // pick list containing a mix of places and predicted search terms.
 
 var imgURLstr = 'https://[%farm%].staticflickr.com/[%server%]/[%id%]_[%sercret%].jpg';
-var apiURL = 'https://api.flickr.com/services/rest';
-$.ajax({
-	url: apiURL,
-	type: 'GET',
-	data: {
-		method: 'flickr.photos.search',
-		format: 'json',
-		lat: 48.858844,
-		lng: 2.294351,
-		api_key: '77557c7eaccf5752d7dbe6a356f98f36'
-	},
-	success: function(response) {
-		console.log(response);
-	}
-});
+var flickrAPIURL = 'https://api.flickr.com/services/rest/';
+
+var nytAPIKey = "2bdef7d706bc8030ab9d2d31b5580154:7:70540436";
+var nytAPIURL = "http://api.nytimes.com/svc/search/v2/articlesearch.json?";
+
 
 var $list = $('#location-list');
 var $window = $(window);
+var $map = $('#map-canvas');
 
 $(function() {
-	resizeList();
-	$window.resize(resizeList);
+	resize();
+	$window.resize(resize);
 });
 
-var resizeList = function() {
+var resize = function() {
 	$list.height($window.height() - 50);
 	$list.css({"padding-top": 0, "top": "50px"});
+	$map.width($window.width() - 200);
+	$map.css("left", "200px");
 }
 
 var model = {
@@ -292,6 +285,14 @@ var model = {
 	}
 };
 
+function jsonFlickrApi(rsp){
+	if (rsp.stat != "ok"){
+		// something broke!
+		return;
+	}
+	console.log(rsp.photos.photo);
+}
+
 var ViewModel = function(){
 	var self = this;
 
@@ -319,12 +320,33 @@ var ViewModel = function(){
 	// Add a marker to the map and push to the array.
 	self.Location = function(title, lat, lng) {
 	  	this.county = title;
+	  	this.lat = lat;
+	  	this.lng = lng;
+	  	this.visible = ko.observable(true);
 	  	this.marker = new google.maps.Marker({
 		    position: new google.maps.LatLng(lat,lng),
 		    visible: true,
 		    map: self.map,
 		    animation: google.maps.Animation.DROP
 	  		});
+		this.getLocationData = function() {
+			$.ajax({
+				url: flickrAPIURL,
+				data: {
+					method: 'flickr.photos.search',
+					api_key: '77557c7eaccf5752d7dbe6a356f98f36',
+					format: 'json',
+					lat: this.lat,
+					lng: this.lng,
+					tags: "bigfoot, sasquatch",
+					nojsoncallback: 1
+				},
+				success: function(rsp) {
+					self.photos = rsp.photos.photo;
+					console.log(self.photos);
+				}
+			});
+		}
 	}
 
 	this.setLocations = function(locations) {
@@ -364,12 +386,11 @@ var ViewModel = function(){
 
 	this.searchTerm.subscribe(function(term) {
 		var length = self.locations().length;
-		var location;
+		var loc;
 		for (var i = 0; i < length; i++) {
-			self
-			.locations()[i]
-			.marker
-			.setVisible(model.fuzzyCompare(term, self.locations()[i].county));
+			loc = self.locations()[i];
+			loc.visible(model.fuzzyCompare(term, loc.county));
+			loc.marker.setVisible(loc.visible());
 		}
 	});
 };
