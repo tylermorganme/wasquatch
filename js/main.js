@@ -354,10 +354,14 @@ var ViewModel = function(){
 					nojsoncallback: 1
 				},
 				success: function(rsp) {
-					//console.log('xxx');
-					//var pho = rsp.photos.photo[1];
-					console.log(_location.marker.html.replace('[%image%]','http://placekitten.com/g/200/300'));
-					_location.infowindow.setContent(_location.marker.html.replace('[%image%]','http://placekitten.com/g/200/300'));
+					_location.photos = rsp.photos
+					var imgURLstr = 'https://farm[%farm%].staticflickr.com/[%server%]/[%id%]_[%sercret%]_q.jpg';
+					console.log(_location.photos.photo[0]);
+					_location.marker.img = imgURLstr.replace('[%farm%]', _location.photos.photo[0].farm)
+						.replace('[%server%]', _location.photos.photo[0].server)
+						.replace('[%id%]', _location.photos.photo[0].id)
+						.replace('[%sercret%]', _location.photos.photo[0].secret);
+					_location.infowindow.setContent(_location.marker.html.replace('[%image%]', _location.marker.img));
 	    			_location.infowindow.open(self.map, _location.marker);
 				}
 			});
