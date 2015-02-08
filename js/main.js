@@ -318,7 +318,8 @@ var ViewModel = function(){
 	self.searchTerm = ko.observable();
 
 	// Add a marker to the map and push to the array.
-	self.Location = function(title, lat, lng) {
+	self.Location = function(title, lat, lng, count) {
+	  	var _location = this;
 	  	this.county = title;
 	  	this.lat = lat;
 	  	this.lng = lng;
@@ -327,9 +328,20 @@ var ViewModel = function(){
 		    position: new google.maps.LatLng(lat,lng),
 		    visible: true,
 		    map: self.map,
-		    animation: google.maps.Animation.DROP
+		    animation: google.maps.Animation.DROP,
+		    title: title,
+		    sightings: count,
+		    html: '<h3>' + title + '</h3>' +
+		    '<h5>Sightings: ' + count + '</h5>' +
+	  		'<div class="images"><img src="[%image%]"></div>'
 	  		});
-		this.getLocationData = function() {
+	  	this.infowindow = new google.maps.InfoWindow({
+			content: "There is currently no data."
+		});
+	  	google.maps.event.addListener(this.marker, 'click', function() {
+	    	_location.getLocationData()
+		});
+		this.getLocationData = function(callback) {
 			$.ajax({
 				url: flickrAPIURL,
 				data: {
@@ -342,8 +354,11 @@ var ViewModel = function(){
 					nojsoncallback: 1
 				},
 				success: function(rsp) {
-					self.photos = rsp.photos.photo;
-					console.log(self.photos);
+					//console.log('xxx');
+					//var pho = rsp.photos.photo[1];
+					console.log(_location.marker.html.replace('[%image%]','http://placekitten.com/g/200/300'));
+					_location.infowindow.setContent(_location.marker.html.replace('[%image%]','http://placekitten.com/g/200/300'));
+	    			_location.infowindow.open(self.map, _location.marker);
 				}
 			});
 		}
@@ -351,10 +366,10 @@ var ViewModel = function(){
 
 	this.setLocations = function(locations) {
 		var length = locations.length;
-		var location;
+		var loc;
 		for (var i = 0; i < length; i++){
-			location = locations[i];
-			self.locations.push(new self.Location(location.county, location.lat, location.lng));
+			loc = locations[i];
+			self.locations.push(new self.Location(loc.county, loc.lat, loc.lng, loc.sightings));
 		}
 	}
 
