@@ -7110,12 +7110,20 @@ html, body {
   padding: 0px; }
 
 /* line 16, ../sass/screen.scss */
+.images img {
+  width: 100%;
+  max-width: 200px;
+  padding: 5px;
+  height: auto;
+  overflow-y: hidden; }
+
+/* line 24, ../sass/screen.scss */
 #map-canvas {
   box-sizing: border-box;
   width: 100%;
   height: 100%; }
 
-/* line 22, ../sass/screen.scss */
+/* line 30, ../sass/screen.scss */
 .controls {
   margin-top: 16px;
   border: 1px solid transparent;
@@ -7126,7 +7134,7 @@ html, body {
   outline: none;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3); }
 
-/* line 33, ../sass/screen.scss */
+/* line 41, ../sass/screen.scss */
 #pac-input {
   background-color: #fff;
   padding: 0 11px 0 13px;
@@ -7136,7 +7144,7 @@ html, body {
   font-weight: 300;
   text-overflow: ellipsis; }
 
-/* line 45, ../sass/screen.scss */
+/* line 53, ../sass/screen.scss */
 #pac-input:focus {
   border-color: #4d90fe;
   margin-left: -1px;
@@ -7144,27 +7152,27 @@ html, body {
   /* Regular padding-left + 1. */
   width: 401px; }
 
-/* line 52, ../sass/screen.scss */
+/* line 60, ../sass/screen.scss */
 .pac-container {
   font-family: Roboto; }
 
-/* line 56, ../sass/screen.scss */
+/* line 64, ../sass/screen.scss */
 #type-selector {
   color: #fff;
   background-color: #4d90fe;
   padding: 5px 11px 0px 11px; }
 
-/* line 62, ../sass/screen.scss */
+/* line 70, ../sass/screen.scss */
 #type-selector label {
   font-family: Roboto;
   font-size: 13px;
   font-weight: 300; }
 
-/* line 68, ../sass/screen.scss */
+/* line 76, ../sass/screen.scss */
 #target {
   width: 345px; }
 
-/* line 72, ../sass/screen.scss */
+/* line 80, ../sass/screen.scss */
 form {
   position: absolute;
   top: 0;
@@ -7172,13 +7180,13 @@ form {
   width: 100%;
   height: 50px; }
 
-/* line 80, ../sass/screen.scss */
+/* line 88, ../sass/screen.scss */
 #search-term {
   width: 100%;
   height: 100%;
   text-align: center; }
 
-/* line 86, ../sass/screen.scss */
+/* line 94, ../sass/screen.scss */
 #list-view {
   box-sizing: border-box;
   position: fixed;
@@ -7187,7 +7195,7 @@ form {
   height: 100%;
   width: 200px; }
 
-/* line 95, ../sass/screen.scss */
+/* line 103, ../sass/screen.scss */
 #location-list {
   padding-top: 50px;
   position: absolute;
@@ -7198,7 +7206,7 @@ form {
   width: 100%;
   overflow-y: auto;
   overflow-x: hidden; }
-  /* line 105, ../sass/screen.scss */
+  /* line 113, ../sass/screen.scss */
   #location-list li {
     width: 100%;
     line-height: 2em;

@@ -285,14 +285,6 @@ var model = {
 	}
 };
 
-function jsonFlickrApi(rsp){
-	if (rsp.stat != "ok"){
-		// something broke!
-		return;
-	}
-	console.log(rsp.photos.photo);
-}
-
 var ViewModel = function(){
 	var self = this;
 
@@ -324,6 +316,21 @@ var ViewModel = function(){
 	  	this.lat = lat;
 	  	this.lng = lng;
 	  	this.visible = ko.observable(true);
+	  	this.count = count;
+	  	this.html = '<h3>' + title + '</h3>' +
+		    '<h5>Sightings: ' + count + '</h5>' +
+		    '<p>[%message%]</p>' +
+	  		'<div class="images"><img src="[%image%]"></div>',
+
+	  	this.setIconPath = function(count) {
+	  		if (count > 49) {
+	  			return 'http://maps.google.com/mapfiles/kml/pal3/icon37.png';
+	  		} else if (count > 0) {
+	  			return 'http://maps.google.com/mapfiles/kml/pal3/icon45.png';
+	  		}
+	  		return 'http://maps.google.com/mapfiles/kml/pal2/icon4.png';
+ 	  	};
+
 	  	this.marker = new google.maps.Marker({
 		    position: new google.maps.LatLng(lat,lng),
 		    visible: true,
@@ -331,38 +338,61 @@ var ViewModel = function(){
 		    animation: google.maps.Animation.DROP,
 		    title: title,
 		    sightings: count,
-		    html: '<h3>' + title + '</h3>' +
-		    '<h5>Sightings: ' + count + '</h5>' +
-	  		'<div class="images"><img src="[%image%]"></div>'
+		    icon: _location.setIconPath(_location.count)
 	  		});
 	  	this.infowindow = new google.maps.InfoWindow({
-			content: "There is currently no data."
+			content: "There is currently no data.",
+			maxWidth: 250
 		});
 	  	google.maps.event.addListener(this.marker, 'click', function() {
-	    	_location.getLocationData()
+	    	_location.getLocationData("bigfoot,sasquatch,yeti");
+	    	_location.marker.setIcon('http://maps.google.com/mapfiles/kml/pal4/icon47.png');
 		});
-		this.getLocationData = function(callback) {
+	  	google.maps.event.addListener(this.infowindow, 'closeclick', function() {
+	    	_location.marker.setIcon(_location.setIconPath(_location.count));
+		});
+		this.getLocationData = function(tags) {
 			$.ajax({
 				url: flickrAPIURL,
+				type: 'POST',
 				data: {
 					method: 'flickr.photos.search',
 					api_key: '77557c7eaccf5752d7dbe6a356f98f36',
+					tags: tags,
+					sort: 'interestingness-desc',
+					has_geo: 1,
+					content_type: 1,
+					lat: _location.lat,
+					lon: _location.lng,
+					radius: 32,
 					format: 'json',
-					lat: this.lat,
-					lng: this.lng,
-					tags: "bigfoot, sasquatch",
 					nojsoncallback: 1
 				},
 				success: function(rsp) {
-					_location.photos = rsp.photos
+					if (rsp.photos.photo.length === 0) {
+						_location.infowindow.setContent(_location.html
+							.replace('[%image%]', 'http://upload.wikimedia.org/wikipedia/commons/f/f6/Swiss_National_Park_131.JPG')
+							.replace('[%message%]', "We couldn't find any pictures... but I'm sure the Wasquatch is out there somewhere!"));
+	    				_location.infowindow.open(self.map, _location.marker);
+						return;
+					}
+					_location.photos = rsp.photos.photo;
 					var imgURLstr = 'https://farm[%farm%].staticflickr.com/[%server%]/[%id%]_[%sercret%]_q.jpg';
-					console.log(_location.photos.photo[0]);
-					_location.marker.img = imgURLstr.replace('[%farm%]', _location.photos.photo[0].farm)
-						.replace('[%server%]', _location.photos.photo[0].server)
-						.replace('[%id%]', _location.photos.photo[0].id)
-						.replace('[%sercret%]', _location.photos.photo[0].secret);
-					_location.infowindow.setContent(_location.marker.html.replace('[%image%]', _location.marker.img));
+					_location.img = imgURLstr.replace('[%farm%]', _location.photos[0].farm)
+						.replace('[%server%]', _location.photos[0].server)
+						.replace('[%id%]', _location.photos[0].id)
+						.replace('[%sercret%]', _location.photos[0].secret);
+					_location.infowindow.setContent(_location.html
+						.replace('[%image%]', _location.img)
+						.replace('[%message%]', "Here is the latest pic of a Wasquatch for this area."));
 	    			_location.infowindow.open(self.map, _location.marker);
+				},
+				error: function() {
+					_location.infowindow.setContent(_location.html
+							.replace('[%image%]', 'http://upload.wikimedia.org/wikipedia/commons/f/f6/Swiss_National_Park_131.JPG')
+							.replace('[%message%]', "We couldn't find any pictures... but I'm sure the Wasquatch is out there somewhere!"));
+	    				_location.infowindow.open(self.map, _location.marker);
+    				_location.infowindow.open(self.map, _location.marker);
 				}
 			});
 		}

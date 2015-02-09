@@ -15,4 +15,6 @@ https://www.flickr.com/services/api/response.json.html
 
 http://www.bfro.net/GDB/newadd.asp
 
+http://kml4earth.appspot.com/icons.html
+
 TODO:Create a news reader for bigfoot news.

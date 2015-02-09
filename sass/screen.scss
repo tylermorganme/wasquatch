@@ -13,6 +13,14 @@ html, body {
 	padding: 0px;
 }
 
+.images img {
+	width: 100%;
+	max-width: 200px;
+	padding: 5px;
+	height: auto;
+	overflow-y: hidden;
+}
+
 #map-canvas {
 	box-sizing: border-box;
 	width: 100%;
