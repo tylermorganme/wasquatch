@@ -344,13 +344,17 @@ var ViewModel = function(){
 			content: "There is currently no data.",
 			maxWidth: 250
 		});
-	  	google.maps.event.addListener(this.marker, 'click', function() {
-	    	_location.getLocationData("bigfoot,sasquatch,yeti");
+		this.click = function() {
+			_location.getLocationData("bigfoot,sasquatch,yeti");
 	    	_location.marker.setIcon('http://maps.google.com/mapfiles/kml/pal4/icon47.png');
+		};
+	  	google.maps.event.addListener(this.marker, 'click', function() {
+	    	_location.click();
 		});
 	  	google.maps.event.addListener(this.infowindow, 'closeclick', function() {
 	    	_location.marker.setIcon(_location.setIconPath(_location.count));
 		});
+
 		this.getLocationData = function(tags) {
 			$.ajax({
 				url: flickrAPIURL,
@@ -440,6 +444,10 @@ var ViewModel = function(){
 			loc = self.locations()[i];
 			loc.visible(model.fuzzyCompare(term, loc.county));
 			loc.marker.setVisible(loc.visible());
+			if (!model.fuzzyCompare(term, loc.county)) {
+				loc.infowindow.close();
+				loc.marker.setIcon(loc.setIconPath(loc.count));
+			}
 		}
 	});
 };

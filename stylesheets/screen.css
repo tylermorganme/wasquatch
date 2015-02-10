@@ -7212,4 +7212,8 @@ form {
     line-height: 2em;
     height: 2em;
     text-align: center;
-    background: #ffffff; }
+    background: #ffffff;
+    cursor: pointer; }
+  /* line 122, ../sass/screen.scss */
+  #location-list li:hover {
+    background: #999999; }

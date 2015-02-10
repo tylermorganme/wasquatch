@@ -116,5 +116,10 @@ form {
 		height: 2em;
 		text-align: center;
 		background: #ffffff;
+		cursor: pointer;
+
+		}
+	li:hover {
+			background: #999999;
 	}
 }
