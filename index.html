@@ -7,12 +7,9 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <!-- <script src="js/vendor/modernizr-2.8.3.min.js"></script> -->
         <link href="stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" />
         <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script>
-        <!-- <script type="text/javascript"
-          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC1_3BLvbKHgSaNY__DBeTSBpd_MsbiWfk">
-        </script> -->
+        <link rel="stylesheet" href="http://i.icomoon.io/public/temp/836511852e/Wasquatch/style.css">
     </head>
     <body>
         <!--[if lt IE 8]>
@@ -25,17 +22,22 @@
             <input type="submit" class="btn btn-default">
         </form> -->
         <!-- <input id="pac-input" class="controls" type="text" placeholder="Search Box"> -->
-        <div id="map-canvas"></div>
+
         <div id="list-view">
             <ul id="location-list" data-bind="foreach: locations">
                 <li data-bind="visible: visible, text: county, click: click"></li>
             </ul>
             <form>
-                <input id="search-term" type="search" placeholder="ENTER FILTER HERE" data-bind="textInput: searchTerm">
+                <input id="search-term" type="search" placeholder="FILTER" data-bind="textInput: searchTerm">
             </form>
         </div>
+        <div class="map-container">
 
-
+            <div id="map-canvas"></div>
+        </div>
+        <div id="menu-toggle">
+            <span class="icon-cross"></span>
+        </div>
         <script src="bower_components/knockoutjs/dist/knockout.js"></script>
         <script src="bower_components/jQuery/dist/jquery.js"></script>
         <script src="js/main.js"></script>

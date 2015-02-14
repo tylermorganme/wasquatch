@@ -11,18 +11,23 @@ var nytAPIURL = "http://api.nytimes.com/svc/search/v2/articlesearch.json?";
 
 var $list = $('#location-list');
 var $window = $(window);
-var $map = $('#map-canvas');
+var $map = $('.map-container');
 
 $(function() {
 	resize();
 	$window.resize(resize);
+	$('#menu-toggle span').click(function(){
+		$(this).toggleClass("icon-search").toggleClass("icon-cross");
+		$('#list-view').toggleClass("hidden-left");
+		$('.map-container').toggleClass("full");
+	});
+
 });
 
 var resize = function() {
+	var w = $window.width();
 	$list.height($window.height() - 50);
 	$list.css({"padding-top": 0, "top": "50px"});
-	$map.width($window.width() - 200);
-	$map.css("left", "200px");
 }
 
 var model = {
@@ -90,7 +95,7 @@ var model = {
 	{
 	county: "Franklin",
 	lat: 46.5400,
-	lng: 118.9000,
+	lng: -118.9000,
 	sightings: 0
 	},
 	{
@@ -246,13 +251,13 @@ var model = {
 	{
 	county: "Whatcom",
 	lat: 48.8300,
-	lng: 121.9000,
+	lng: -121.9000,
 	sightings: 17
 	},
 	{
 	county: "Yakima",
 	lat: 46.4600,
-	lng: 120.7400,
+	lng: -120.7400,
 	sightings: 24
 	}
 	],
@@ -335,7 +340,7 @@ var ViewModel = function(){
 		    position: new google.maps.LatLng(lat,lng),
 		    visible: true,
 		    map: self.map,
-		    animation: google.maps.Animation.DROP,
+		    //animation: google.maps.Animation.DROP,
 		    title: title,
 		    sightings: count,
 		    icon: _location.setIconPath(_location.count)
@@ -409,6 +414,16 @@ var ViewModel = function(){
 			loc = locations[i];
 			self.locations.push(new self.Location(loc.county, loc.lat, loc.lng, loc.sightings));
 		}
+		self.resizeMap();
+	}
+
+	this.resizeMap = function() {
+		var length = self.locations().length;
+		var bounds = new google.maps.LatLngBounds();
+		for(i=0;i<length;i++) {
+			bounds.extend(self.locations()[i].marker.getPosition());
+		}
+		self.map.fitBounds(bounds);
 	}
 
 	// Sets the map on all markers in the array.

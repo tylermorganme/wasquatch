@@ -11,6 +11,17 @@ html, body {
 	width: 100%;
 	margin: 0px;
 	padding: 0px;
+	overflow: hidden;
+}
+
+#menu-toggle {
+	position: absolute;
+	top: 5px;
+	left: 200px;
+	padding-left:10px;
+	z-index: 2;
+	font-size: 35px;
+	transition: 0.5s;
 }
 
 .images img {
@@ -22,9 +33,20 @@ html, body {
 }
 
 #map-canvas {
-	box-sizing: border-box;
+	position: relative;
 	width: 100%;
 	height: 100%;
+	float: left;
+}
+
+.map-container {
+	position: fixed;
+	top: 0;
+	right: 0;
+	width: 100%;
+	height: 100%;
+	transition: 0.5s;
+	padding-left: 200px;
 }
 
 .controls {
@@ -92,12 +114,14 @@ form {
 }
 
 #list-view {
-	box-sizing: border-box;
 	position: fixed;
 	top: 0;
 	left: 0;
+	box-sizing: border-box;
 	height: 100%;
 	width: 200px;
+	transition: 0.5s;
+	z-index: 1;
 }
 
 #location-list {
@@ -122,4 +146,36 @@ form {
 	li:hover {
 			background: #999999;
 	}
+}
+
+@media screen and (max-width: 600px) {
+	#list-view {
+		width: 100%;
+	}
+	.map-container {
+		padding-left: 200px;
+	}
+	#menu-toggle {
+		position: fixed;
+		top: 5px;
+		left: 10px;
+		transition: 0.5s;
+	}
+}
+
+////////////////////////////////
+//Overriding Classes
+////////////////////////////////
+.full {
+	position: fixed;
+	top: 0;
+	right: 0;
+	width: 100%;
+	transition: 0.5s;
+	padding-left: 0;
+}
+
+.hidden-left {
+	transform: translateX(-100%);
+	transition: 0.5s;
 }

@@ -17,4 +17,7 @@ http://www.bfro.net/GDB/newadd.asp
 
 http://kml4earth.appspot.com/icons.html
 
+https://icomoon.io
+
 TODO:Create a news reader for bigfoot news.
+TODO: Break out methods to prototypes
