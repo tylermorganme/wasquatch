@@ -9,26 +9,29 @@ var nytAPIKey = "2bdef7d706bc8030ab9d2d31b5580154:7:70540436";
 var nytAPIURL = "http://api.nytimes.com/svc/search/v2/articlesearch.json?";
 
 
-var $list = $('#location-list');
-var $window = $(window);
-var $map = $('.map-container');
-
 $(function() {
+
+	var $list = $('#location-list');
+	var $window = $(window);
+	var $map = $('.map-container');
+
+	var resize = function() {
+		var w = $window.width();
+		$list.height($window.height() - 50);
+		$list.css({"padding-top": 0, "top": "50px"});
+	};
+
 	resize();
 	$window.resize(resize);
-	$('#menu-toggle span').click(function(){
+	$('.menu-toggle span').click(function(){
 		$(this).toggleClass("icon-search").toggleClass("icon-cross");
 		$('#list-view').toggleClass("hidden-left");
 		$('.map-container').toggleClass("full");
+		$('.menu-toggle').toggleClass("menu-left");
 	});
 
+	ko.applyBindings(new ViewModel());
 });
-
-var resize = function() {
-	var w = $window.width();
-	$list.height($window.height() - 50);
-	$list.css({"padding-top": 0, "top": "50px"});
-}
 
 var model = {
 	countySightings: [
@@ -70,8 +73,8 @@ var model = {
 	},
 	{
 	county: "Columbia",
-	lat: 47.8800,
-	lng: -120.6400,
+	lat: 46.3000,
+	lng: -117.9200,
 	sightings: 4
 	},
 	{
@@ -293,9 +296,26 @@ var model = {
 var ViewModel = function(){
 	var self = this;
 
+	var defaultImage = 'http://upload.wikimedia.org/wikipedia/commons/f/f6/Swiss_National_Park_131.JPG';
+	var defaultMessage = "We couldn't find any pictures... but I'm sure the Wasquatch is out there somewhere!";
+
+	var listContentTemplate = '<p>[%message%]</p><div class="images"><img src="[%image%]"></div>'
+
+	var defaultContent = listContentTemplate 
+						.replace('[%image%]', defaultImage)
+						.replace('[%message%]', defaultMessage)
+
+	var makeFlickrURL = function(data) {
+		var imgURLstr = 'https://farm[%farm%].staticflickr.com/[%server%]/[%id%]_[%sercret%]_q.jpg';
+		return imgURLstr.replace('[%farm%]', data.farm)
+			.replace('[%server%]', data.server)
+			.replace('[%id%]', data.id)
+			.replace('[%sercret%]', data.secret);
+	};
+
 	self.locations = ko.observableArray([]);
 
-	this.mapOptions = {
+	self.mapOptions = {
 		center: {lat: 47.5000, lng: -120.5000},
 		zoom: 7,
 		mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -315,103 +335,103 @@ var ViewModel = function(){
 	self.searchTerm = ko.observable();
 
 	// Add a marker to the map and push to the array.
-	self.Location = function(title, lat, lng, count) {
+	Location = function(title, lat, lng, count, map) {
 	  	var _location = this;
 	  	this.county = title;
 	  	this.lat = lat;
 	  	this.lng = lng;
-	  	this.visible = ko.observable(true);
+	  	this.isVisible = ko.observable(true);
 	  	this.count = count;
-	  	this.html = '<h3>' + title + '</h3>' +
-		    '<h5>Sightings: ' + count + '</h5>' +
-		    '<p>[%message%]</p>' +
-	  		'<div class="images"><img src="[%image%]"></div>',
-	  	this.open= ko.observable(false);
-
-	  	this.setIconPath = function(count) {
-	  		if (count > 49) {
-	  			return 'http://maps.google.com/mapfiles/kml/pal3/icon37.png';
-	  		} else if (count > 0) {
-	  			return 'http://maps.google.com/mapfiles/kml/pal3/icon45.png';
-	  		}
-	  		return 'http://maps.google.com/mapfiles/kml/pal2/icon4.png';
- 	  	};
+	  	this.infoHTML = ko.observable('<h3>' + title + '</h3>' +
+		    '<h5>Sightings: ' + count + '</h5>'),
+	  	this.listHTML = ko.observable("Scanning for Wasquatches...");
+	  	this.isOpen = ko.observable(false);
 
 	  	this.marker = new google.maps.Marker({
-		    position: new google.maps.LatLng(lat,lng),
-		    visible: true,
-		    map: self.map,
-		    //animation: google.maps.Animation.DROP,
-		    title: title,
-		    sightings: count,
-		    icon: _location.setIconPath(_location.count)
-	  		});
+			    position: new google.maps.LatLng(lat,lng),
+			    visible: true,
+			    map: map,
+			    title: title,
+			    sightings: count,
+			    icon: this.iconPath(this.count)
+			});
+
 	  	this.infowindow = new google.maps.InfoWindow({
-			content: "There is currently no data.",
+			content: this.infoHTML(),
 			maxWidth: 250
 		});
-		this.click = function() {
-			if (_location.open()) {
-	    		_location.infowindow.close();
-	    		_location.marker.setIcon(_location.setIconPath(_location.count));
-	    	} else {
-				_location.getLocationData("bigfoot,sasquatch,yeti");
-	    		_location.marker.setIcon('http://maps.google.com/mapfiles/kml/pal4/icon47.png');	    		
-	    	}
-	    	_location.open(!_location.open());
-		};
+
 	  	google.maps.event.addListener(this.marker, 'click', function() {
 	    	_location.click();
 		});
+
 	  	google.maps.event.addListener(this.infowindow, 'closeclick', function() {
-	    	_location.marker.setIcon(_location.setIconPath(_location.count));
+	    	_location.marker.setIcon(_location.iconPath(_location.count));
 		});
 
-		this.getLocationData = function(tags) {
-			$.ajax({
-				url: flickrAPIURL,
-				type: 'POST',
-				data: {
-					method: 'flickr.photos.search',
-					api_key: '77557c7eaccf5752d7dbe6a356f98f36',
-					tags: tags,
-					sort: 'interestingness-desc',
-					has_geo: 1,
-					content_type: 1,
-					lat: _location.lat,
-					lon: _location.lng,
-					radius: 32,
-					format: 'json',
-					nojsoncallback: 1
-				},
-				success: function(rsp) {
-					if (rsp.photos.photo.length === 0) {
-						_location.infowindow.setContent(_location.html
-							.replace('[%image%]', 'http://upload.wikimedia.org/wikipedia/commons/f/f6/Swiss_National_Park_131.JPG')
-							.replace('[%message%]', "We couldn't find any pictures... but I'm sure the Wasquatch is out there somewhere!"));
-	    				_location.infowindow.open(self.map, _location.marker);
-						return;
-					}
-					_location.photos = rsp.photos.photo;
-					var imgURLstr = 'https://farm[%farm%].staticflickr.com/[%server%]/[%id%]_[%sercret%]_q.jpg';
-					_location.img = imgURLstr.replace('[%farm%]', _location.photos[0].farm)
-						.replace('[%server%]', _location.photos[0].server)
-						.replace('[%id%]', _location.photos[0].id)
-						.replace('[%sercret%]', _location.photos[0].secret);
-					_location.infowindow.setContent(_location.html
-						.replace('[%image%]', _location.img)
-						.replace('[%message%]', "Here is the latest pic of a Wasquatch for this area."));
-	    			_location.infowindow.open(self.map, _location.marker);
-				},
-				error: function() {
-					_location.infowindow.setContent(_location.html
-							.replace('[%image%]', 'http://upload.wikimedia.org/wikipedia/commons/f/f6/Swiss_National_Park_131.JPG')
-							.replace('[%message%]', "We couldn't find any pictures... but I'm sure the Wasquatch is out there somewhere!"));
-	    				_location.infowindow.open(self.map, _location.marker);
-    				_location.infowindow.open(self.map, _location.marker);
-				}
-			});
+	}
+
+  	Location.prototype.iconPath = function(count) {
+  		if (count > 49) {
+  			return 'http://maps.google.com/mapfiles/kml/pal3/icon37.png';
+  		} else if (count > 0) {
+  			return 'http://maps.google.com/mapfiles/kml/pal3/icon45.png';
+  		}
+  		return 'http://maps.google.com/mapfiles/kml/pal2/icon4.png';
+ 	 };
+
+	Location.prototype.click = function() {
+		if (this.isOpen()) {
+			this.close();
+    	} else {
+    		this.open();
+    	}
+    	this.isOpen(!this.isOpen());
+	};
+
+	Location.prototype.close = function() {
+		this.infowindow.close();
+		this.marker.setIcon(this.iconPath(this.count));
+	}
+
+	Location.prototype.open = function() {
+		if (!this.photos) {
+			this.getLocationData("bigfoot,sasquatch,yeti");
 		}
+		this.infowindow.open(self.map, this.marker);
+		this.marker.setIcon('http://maps.google.com/mapfiles/kml/pal4/icon47.png');
+	}
+
+	Location.prototype.getLocationData = function(tags) {
+		var _location = this;
+		$.ajax({
+			url: flickrAPIURL,
+			type: 'POST',
+			data: {
+				method: 'flickr.photos.search',
+				api_key: '77557c7eaccf5752d7dbe6a356f98f36',
+				tags: tags,
+				sort: 'interestingness-desc',
+				has_geo: 1,
+				content_type: 1,
+				lat: this.lat,
+				lon: this.lng,
+				radius: 32,
+				format: 'json',
+				nojsoncallback: 1
+			},
+			success: function(rsp) {
+				if (rsp.photos.photo.length === 0) {
+					_location.listHTML(defaultContent);
+				}
+				_location.listHTML(listContentTemplate
+					.replace('[%image%]', makeFlickrURL(rsp.photos.photo[0]))
+					.replace('[%message%]', "Here is the latest pic of a Wasquatch for this area."));
+			},
+			error: function() {
+				_location.listHTML(defaultContent);
+			}
+		});
 	}
 
 	this.setLocations = function(locations) {
@@ -419,7 +439,7 @@ var ViewModel = function(){
 		var loc;
 		for (var i = 0; i < length; i++){
 			loc = locations[i];
-			self.locations.push(new self.Location(loc.county, loc.lat, loc.lng, loc.sightings));
+			self.locations.push(new Location(loc.county, loc.lat, loc.lng, loc.sightings, self.map));
 		}
 		self.resizeMap();
 	}
@@ -464,15 +484,14 @@ var ViewModel = function(){
 		var loc;
 		for (var i = 0; i < length; i++) {
 			loc = self.locations()[i];
-			loc.visible(model.fuzzyCompare(term, loc.county));
-			loc.marker.setVisible(loc.visible());
+			loc.isVisible(model.fuzzyCompare(term, loc.county));
+			loc.marker.setVisible(loc.isVisible());
 			if (!model.fuzzyCompare(term, loc.county)) {
 				loc.infowindow.close();
-				loc.marker.setIcon(loc.setIconPath(loc.count));
+				loc.marker.setIcon(loc.iconPath(loc.count));
 			}
 		}
 	});
 };
 
-ko.applyBindings(new ViewModel());
 

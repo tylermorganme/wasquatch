@@ -7111,7 +7111,7 @@ html, body {
   overflow: hidden; }
 
 /* line 17, ../sass/screen.scss */
-#menu-toggle {
+.menu-toggle {
   position: absolute;
   top: 5px;
   left: 200px;
@@ -7215,11 +7215,12 @@ form {
   left: 0;
   box-sizing: border-box;
   height: 100%;
+  background: #ffffff;
   width: 200px;
   transition: 0.5s;
   z-index: 1; }
 
-/* line 127, ../sass/screen.scss */
+/* line 128, ../sass/screen.scss */
 #location-list {
   padding-top: 50px;
   position: absolute;
@@ -7230,9 +7231,8 @@ form {
   width: 100%;
   overflow-y: auto;
   overflow-x: hidden; }
-  /* line 137, ../sass/screen.scss */
+  /* line 138, ../sass/screen.scss */
   #location-list li {
-    display: inline-block;
     width: 100%;
     text-align: center;
     background: #ffffff;
@@ -7251,10 +7251,10 @@ form {
     padding-left: 200px; }
 
   /* line 157, ../sass/screen.scss */
-  #menu-toggle {
+  .menu-toggle {
     position: fixed;
     top: 5px;
-    left: 10px;
+    left: 0px;
     transition: 0.5s; } }
 /* line 168, ../sass/screen.scss */
 .full {
@@ -7269,3 +7269,7 @@ form {
 .hidden-left {
   transform: translateX(-100%);
   transition: 0.5s; }
+
+/* line 182, ../sass/screen.scss */
+.menu-left {
+  left: 0; }

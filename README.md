@@ -19,7 +19,10 @@ http://kml4earth.appspot.com/icons.html
 
 https://icomoon.io
 
+coordinates for counties were found through Google searches
+
 TODO:Create a news reader for bigfoot news.
 TODO: Break out methods to prototypes
 
 TODO: Create detail info div that open on click on county name in list view.
+TODO: Fix the location of the search marker to move to corner.

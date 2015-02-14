@@ -25,9 +25,9 @@
 
         <div id="list-view">
             <ul id="location-list" data-bind="foreach: locations">
-                <li data-bind="visible: visible, click: click">
+                <li data-bind="visible: isVisible, click: click">
                     <p data-bind="text: county"></p>
-                    <div data-bind="visible: open, html: html">Lorem ipsum dolor sit amet, consectetur adipisicing elit. A sunt maiores commodi doloribus, eaque esse ullam iusto fugiat veniam, beatae accusamus maxime, numquam fuga tenetur aut quis aliquid tempora. Corporis!<div>
+                    <div data-bind="visible: isOpen, html: listHTML">Lorem ipsum dolor sit amet, consectetur adipisicing elit. A sunt maiores commodi doloribus, eaque esse ullam iusto fugiat veniam, beatae accusamus maxime, numquam fuga tenetur aut quis aliquid tempora. Corporis!<div>
                 </li>
             </ul>
             <form>
@@ -38,7 +38,7 @@
 
             <div id="map-canvas"></div>
         </div>
-        <div id="menu-toggle">
+        <div class="menu-toggle">
             <span class="icon-cross"></span>
         </div>
         <script src="bower_components/knockoutjs/dist/knockout.js"></script>
