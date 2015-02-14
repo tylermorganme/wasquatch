@@ -326,6 +326,7 @@ var ViewModel = function(){
 		    '<h5>Sightings: ' + count + '</h5>' +
 		    '<p>[%message%]</p>' +
 	  		'<div class="images"><img src="[%image%]"></div>',
+	  	this.open= ko.observable(false);
 
 	  	this.setIconPath = function(count) {
 	  		if (count > 49) {
@@ -350,8 +351,14 @@ var ViewModel = function(){
 			maxWidth: 250
 		});
 		this.click = function() {
-			_location.getLocationData("bigfoot,sasquatch,yeti");
-	    	_location.marker.setIcon('http://maps.google.com/mapfiles/kml/pal4/icon47.png');
+			if (_location.open()) {
+	    		_location.infowindow.close();
+	    		_location.marker.setIcon(_location.setIconPath(_location.count));
+	    	} else {
+				_location.getLocationData("bigfoot,sasquatch,yeti");
+	    		_location.marker.setIcon('http://maps.google.com/mapfiles/kml/pal4/icon47.png');	    		
+	    	}
+	    	_location.open(!_location.open());
 		};
 	  	google.maps.event.addListener(this.marker, 'click', function() {
 	    	_location.click();

@@ -7232,32 +7232,31 @@ form {
   overflow-x: hidden; }
   /* line 137, ../sass/screen.scss */
   #location-list li {
+    display: inline-block;
     width: 100%;
-    line-height: 2em;
-    height: 2em;
     text-align: center;
     background: #ffffff;
     cursor: pointer; }
-  /* line 146, ../sass/screen.scss */
+  /* line 145, ../sass/screen.scss */
   #location-list li:hover {
     background: #999999; }
 
 @media screen and (max-width: 600px) {
-  /* line 152, ../sass/screen.scss */
+  /* line 151, ../sass/screen.scss */
   #list-view {
     width: 100%; }
 
-  /* line 155, ../sass/screen.scss */
+  /* line 154, ../sass/screen.scss */
   .map-container {
     padding-left: 200px; }
 
-  /* line 158, ../sass/screen.scss */
+  /* line 157, ../sass/screen.scss */
   #menu-toggle {
     position: fixed;
     top: 5px;
     left: 10px;
     transition: 0.5s; } }
-/* line 169, ../sass/screen.scss */
+/* line 168, ../sass/screen.scss */
 .full {
   position: fixed;
   top: 0;
@@ -7266,7 +7265,7 @@ form {
   transition: 0.5s;
   padding-left: 0; }
 
-/* line 178, ../sass/screen.scss */
+/* line 177, ../sass/screen.scss */
 .hidden-left {
   transform: translateX(-100%);
   transition: 0.5s; }

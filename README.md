@@ -21,3 +21,5 @@ https://icomoon.io
 
 TODO:Create a news reader for bigfoot news.
 TODO: Break out methods to prototypes
+
+TODO: Create detail info div that open on click on county name in list view.
