@@ -1,40 +1,19 @@
-// This example adds a search box to a map, using the Google Place Autocomplete
-// feature. People can enter geographical searches. The search box will return a
-// pick list containing a mix of places and predicted search terms.
-
-var imgURLstr = 'https://[%farm%].staticflickr.com/[%server%]/[%id%]_[%sercret%].jpg';
-var flickrAPIURL = 'https://api.flickr.com/services/rest/';
-
-var nytAPIKey = "2bdef7d706bc8030ab9d2d31b5580154:7:70540436";
-var nytAPIURL = "http://api.nytimes.com/svc/search/v2/articlesearch.json?";
-
-
+/**
+ * A container to make sure that the DOM is loaded before running the ViewModel code
+ */
 $(function() {
-
-	var $list = $('#location-list');
-	var $window = $(window);
-	var $map = $('.map-container');
-
-	var resize = function() {
-		var w = $window.width();
-		$list.height($window.height() - 50);
-		$list.css({"padding-top": 0, "top": "50px"});
-	};
-
-	resize();
-	$window.resize(resize);
-	$('.menu-toggle span').click(function(){
-		$(this).toggleClass("icon-search").toggleClass("icon-cross");
-		$('#list-view').toggleClass("hidden-left");
-		$('.map-container').toggleClass("full");
-		$('.menu-toggle').toggleClass("menu-left");
-	});
-
 	ko.applyBindings(new ViewModel());
-	resize();
 });
 
+/**
+ * The data model for the applications.
+ * @type {Object}
+ */
 var model = {
+	/**
+	 * An array of objects containing all of the counties in Washignton, their latitude and longitude, and the number of sasquatch sightings according to http://www.bfro.net.
+	 * @type {Array}
+	 */
 	countySightings: [
 	{
 	county: "Adams",
@@ -228,6 +207,12 @@ var model = {
 	sightings: 24
 	}
 	],
+	/**
+	 * Checks to see if a string contains all of the letter in a search string.
+	 * @param  {string} search The characters to be searched for.
+	 * @param  {string} inStr  The string to search for the characters in.
+	 * @return {boolean}        Whether or not all of the characters were found.
+	 */
 	fuzzyCompare: function(search, inStr) {
 		var lengthSearch = search.length;
 		var lengthInStr = inStr.length;
@@ -246,18 +231,74 @@ var model = {
 	}
 };
 
+/**
+ * The ViewModel for the application
+ */
 var ViewModel = function(){
+	/**
+	 * An abstraction of the 'this' variable.
+	 */
 	var self = this;
 
+	/**
+	 * A template for the string used to create a flickr iamge URL.
+	 * @type {String}
+	 */
+	var imgURLstr = 'https://[%farm%].staticflickr.com/[%server%]/[%id%]_[%sercret%].jpg';
+
+	/**
+	 * The base URL for the flickr API
+	 * @type {String}
+	 */
+	var flickrAPIURL = 'https://api.flickr.com/services/rest/';
+
+
+	/**
+	 * TODO: Add news feed functionality
+	 */
+
+	/**
+	 * API key for the New York Times API
+	 * @type {String}
+	 */
+	var nytAPIKey = "2bdef7d706bc8030ab9d2d31b5580154:7:70540436";
+	/**
+	 * The base URL for the New York Times API
+	 * @type {String}
+	 */
+	var nytAPIURL = "http://api.nytimes.com/svc/search/v2/articlesearch.json?";
+
+	/**
+	 * The default image to appear when the flickr API is unable to return photos
+	 * @type {String}
+	 */
 	var defaultImage = 'http://upload.wikimedia.org/wikipedia/commons/f/f6/Swiss_National_Park_131.JPG';
+
+	/**
+	 * The default message to appear when the flickr API is unable to return photos
+	 * @type {String}
+	 */
 	var defaultMessage = "We couldn't find any pictures... but I'm sure the Wasquatch is out there somewhere!";
 
-	var listContentTemplate = '<p>[%message%]</p><div class="images"><img src="[%image%]"></div>'
+	/**
+	 * The template for building the markup to fill the list view
+	 * @type {String}
+	 */
+	var listContentTemplate = '<p>[%message%]</p><div class="images"><img src="[%image%]"></div>';
 
+	/**
+	 * The default markup for the list view if the flickr API is unable to return photos
+	 * @type {[type]}
+	 */
 	var defaultContent = listContentTemplate 
 						.replace('[%image%]', defaultImage)
-						.replace('[%message%]', defaultMessage)
+						.replace('[%message%]', defaultMessage);
 
+	/**
+	 * Returns the URL photo for the objects returned from the flickr search API
+	 * @param  {object} data Photo object returned from the flickr API
+	 * @return {String}      The URL for the given flickr data object.
+	 */
 	var makeFlickrURL = function(data) {
 		var imgURLstr = 'https://farm[%farm%].staticflickr.com/[%server%]/[%id%]_[%sercret%]_q.jpg';
 		return imgURLstr.replace('[%farm%]', data.farm)
@@ -266,8 +307,60 @@ var ViewModel = function(){
 			.replace('[%sercret%]', data.secret);
 	};
 
+	/**
+	 * Holds a jQuery object for the list view DOM object
+	 * @type {object}
+	 */
+	var $list = $('#location-list');
+
+	/**
+	 * Holds a jQuery object for the window
+	 * @type {object}
+	 */
+	var $window = $(window);
+
+	/**
+	 * Holds a jQuery object for div that contains the map view
+	 * @type {object}
+	 */
+	var $map = $('.map-container');
+
+	/**
+	 * Resizes the list and map DOM elements and zooms the map to fit and center on all points
+	 */
+	var resize = function() {
+		var w = $window.width();
+		$list.height($window.height() - 50);
+		$list.css({"padding-top": 0, "top": "50px"});
+		self.resizeMap();
+	};
+
+	/**
+	 * Add an event handler that fires the resize function on window resize
+	 */
+	$window.resize(resize);
+
+	/**
+	 * Adds a click handler to open and close the sidebar, resizes the sidebar and map container, and zooms the map
+	 */
+	$('.menu-toggle span').click(function(){
+		$(this).toggleClass("icon-search").toggleClass("icon-cross");
+		$('#list-view').toggleClass("hidden-left");
+		$('.map-container').toggleClass("full");
+		$('.menu-toggle').toggleClass("menu-left");
+		resize();
+	});
+
+	/**
+	 * Holds location objects for all of the counties and their data
+	 * @type {Observable Array}
+	 */
 	self.locations = ko.observableArray([]);
 
+	/**
+	 * The default options for the Google map
+	 * @type {Object}
+	 */
 	self.mapOptions = {
 		center: {lat: 47.5000, lng: -120.5000},
 		zoom: 7,
@@ -281,26 +374,63 @@ var ViewModel = function(){
 		zoomControlOptions: {
 			style: google.maps.ZoomControlStyle.DEFAULT
 		}
-	}
+	};
 
+	/**
+	 * The Google map object
+	 * @type {Map}
+	 */
 	self.map = new google.maps.Map(document.getElementById('map-canvas'),self.mapOptions);
 
+	/**
+	 * The search term that is used to filter the locations.
+	 * @type {Observable}
+	 */
 	self.searchTerm = ko.observable();
 
-	// Add a marker to the map and push to the array.
+	/**
+	 * Constructor function for a location object representing a county
+	 * @param {string} title Name of the county
+	 * @param {number} lat   Latitude of the county
+	 * @param {nunber} lng   Longitude of the county
+	 * @param {number} count Number of sasquatch sightings
+	 * @param {Map} map   Map that the location will be associated with
+	 * @param {index} index A number to identify the index of the location. Used for auto scrolling.
+	 */
 	Location = function(title, lat, lng, count, map, index) {
 	  	var _location = this;
 	  	this.index = index;
 	  	this.county = title;
 	  	this.lat = lat;
 	  	this.lng = lng;
-	  	this.isVisible = ko.observable(true);
 	  	this.count = count;
+	  	/**
+	  	 * Whether or not the location should be displayed inthe lsit and map views
+	  	 * @type {Boolean}
+	  	 */
+	  	this.isVisible = ko.observable(true);
+
+	  	/**
+	  	 * The markup that is displayed in the map infowindow
+	  	 * @type {string}
+	  	 */
 	  	this.infoHTML = ko.observable('<h3>' + title + '</h3>' +
-		    '<h5>Sightings: ' + count + '</h5>'),
+		    '<h5>Sightings: ' + count + '</h5>');
+	  	/**
+	  	 * The default markup that is displayed in the list view when expanded
+	  	 * @type {String}
+	  	 */
 	  	this.listHTML = ko.observable("Scanning for Wasquatches...");
+	  	/**
+	  	 * Whether or not the location should be displaying additional information
+	  	 * @type {Boolean}
+	  	 */
 	  	this.isOpen = ko.observable(false);
 
+	  	/**
+	  	 * The map marker for the location
+	  	 * @type {Marker}
+	  	 */
 	  	this.marker = new google.maps.Marker({
 			    position: new google.maps.LatLng(lat,lng),
 			    visible: true,
@@ -309,22 +439,30 @@ var ViewModel = function(){
 			    sightings: count,
 			    icon: this.iconPath(this.count)
 			});
-
+	  	/**
+	  	 * The map infowindow for the location Marker
+	  	 * @type {InfoWindow}
+	  	 */
 	  	this.infowindow = new google.maps.InfoWindow({
 			content: this.infoHTML(),
 			maxWidth: 250
 		});
-
+	  	/** Adds a click event for the map Marker */
 	  	google.maps.event.addListener(this.marker, 'click', function() {
 	    	_location.click();
 		});
-
+	  	/** Add the close event for the InfoWindow */
 	  	google.maps.event.addListener(this.infowindow, 'closeclick', function() {
 	    	_location.marker.setIcon(_location.iconPath(_location.count));
 		});
 
-	}
+	};
 
+	/**
+	 * Determined the icon that should be showed based on the number of sasquatch sightings
+	 * @param  {number} count Count of sasquatching sightings
+	 * @return {string}       The URL of the location icon
+	 */
   	Location.prototype.iconPath = function(count) {
   		if (count > 49) {
   			return 'http://maps.google.com/mapfiles/kml/pal3/icon37.png';
@@ -334,34 +472,41 @@ var ViewModel = function(){
   		return 'http://maps.google.com/mapfiles/kml/pal2/icon4.png';
  	 };
 
+ 	 /**
+ 	  * The event that should be fired on the click of a location on the map on in the list
+ 	  */
 	Location.prototype.click = function() {
 		if (this.isOpen()) {
 			this.close();
-
     	} else {
     		this.open();
-    		console.log($('#location-list li').eq(this.index).offset().top);
+    		/** Scroll the selected location to the top of the list */
 			$('#location-list').animate({
 				scrollTop: $('#location-list').scrollTop() + $('#location-list li').eq(this.index).offset().top -50
 			},1000);
     	}
     	this.isOpen(!this.isOpen());
-
 	};
 
+	/** The function to be fired when an open list item is clicked or the close function is triggered on an infowindow */
 	Location.prototype.close = function() {
 		this.infowindow.close();
 		this.marker.setIcon(this.iconPath(this.count));
-	}
+	};
 
+	/** The function to be fired when a close lsit view item or map icon is clicked */
 	Location.prototype.open = function() {
 		if (!this.photos) {
 			this.getLocationData("bigfoot,sasquatch,yeti");
 		}
 		this.infowindow.open(self.map, this.marker);
 		this.marker.setIcon('http://maps.google.com/mapfiles/kml/pal4/icon47.png');
-	}
+	};
 
+	/**
+	 * AJAX call to the flickr API that return photos tagged within 32 kilometers of the location that contain the tags. Adds the returned photos as properties of the location object this function is called on.
+	 * @param  {string} tags Comma seperated lsit of search terms.
+	 */
 	Location.prototype.getLocationData = function(tags) {
 		var _location = this;
 		$.ajax({
@@ -380,7 +525,11 @@ var ViewModel = function(){
 				format: 'json',
 				nojsoncallback: 1
 			},
+			/**
+			 * Add photos to the location.
+			 */
 			success: function(rsp) {
+				/** Uses the default content is there are no photos that meet the criteria */
 				if (rsp.photos.photo.length === 0) {
 					_location.listHTML(defaultContent);
 					return;
@@ -389,12 +538,16 @@ var ViewModel = function(){
 					.replace('[%image%]', makeFlickrURL(rsp.photos.photo[0]))
 					.replace('[%message%]', "Here is the latest pic of a Wasquatch for this area."));
 			},
+			/** Sets the markup to the defaul photo on error */
 			error: function() {
 				_location.listHTML(defaultContent);
 			}
 		});
-	}
+	};
 
+	/** Populates the location observable array with Locations
+	/* @param  {Array} tags An array of objects containing location data.
+	*/
 	this.setLocations = function(locations) {
 		var length = locations.length;
 		var loc;
@@ -403,8 +556,9 @@ var ViewModel = function(){
 			self.locations.push(new Location(loc.county, loc.lat, loc.lng, loc.sightings, self.map, i));
 		}
 		self.resizeMap();
-	}
+	};
 
+	/** Resizes the map to fit all of the locations */
 	this.resizeMap = function() {
 		var length = self.locations().length;
 		var bounds = new google.maps.LatLngBounds();
@@ -412,34 +566,43 @@ var ViewModel = function(){
 			bounds.extend(self.locations()[i].marker.getPosition());
 		}
 		self.map.fitBounds(bounds);
-	}
+		self.map.setCenter(self.mapOptions.center);
+	};
 
-	// Sets the map on all markers in the array.
+	/**
+	 * Sets the map for all of the markers
+	 * @param {Map} map
+	 */
 	this.setAllMap = function (map) {
 		var length = self.markers().length;
 		for (var i = 0; i < length; i++) {
 			self.markers()[i].setMap(map);
 		}
-	}
+	};
 
-	// Removes the markers from the map, but keeps them in the array.
+	/** Clears all of the markers from a map	 */
+
 	this.clearMarkers = function() {
 	  this.setAllMap(null);
-	}
+	};
 
-	// Shows any markers currently in the array.
+	/** Shows all markers on a map */
 	this.showMarkers = function() {
 	  this.setAllMap(map);
-	}
+	};
 
-	// Deletes all markers in the array by removing references to them.
+	/** deletes all markers and removes them from the map */
 	this.deleteMarkers = function() {
 	  this.clearMarkers();
 	  self.markers([]);
-	}
+	};
 
 	this.setLocations(model.countySightings);
 
+	/**
+	 * Filters displayed locations to match search term
+	 * @param  {string} term The search term to be matched
+	 */
 	this.searchTerm.subscribe(function(term) {
 		var length = self.locations().length;
 		var loc;
@@ -453,6 +616,7 @@ var ViewModel = function(){
 			}
 		}
 	});
+	resize();
 };
 
 
