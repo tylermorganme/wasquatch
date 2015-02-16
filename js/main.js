@@ -580,7 +580,7 @@ var ViewModel = function(){
 		}
 	};
 
-	/** Clears all of the markers from a map	 */
+	/** Clears all of the markers from a map */
 
 	this.clearMarkers = function() {
 	  this.setAllMap(null);

@@ -59,6 +59,33 @@ a img {
 article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary {
   display: block; }
 
+@font-face {
+  font-family: 'icomoon';
+  src: url("fonts/icomoon.eot?-2uy3se");
+  src: url("fonts/icomoon.eot?#iefix-2uy3se") format("embedded-opentype"), url("fonts/icomoon.woff?-2uy3se") format("woff"), url("fonts/icomoon.ttf?-2uy3se") format("truetype"), url("fonts/icomoon.svg?-2uy3se#icomoon") format("svg");
+  font-weight: normal;
+  font-style: normal; }
+/* line 12, ../sass/_font.scss */
+[class^="icon-"], [class*=" icon-"] {
+  font-family: 'icomoon';
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; }
+
+/* line 26, ../sass/_font.scss */
+.icon-search:before {
+  content: "\e986"; }
+
+/* line 30, ../sass/_font.scss */
+.icon-cross:before {
+  content: "\ea0f"; }
+
 /*! normalize.css v3.0.2 | MIT License | git.io/normalize */
 /* line 9, ../bower_components/bootstrap-sass/assets/stylesheets/bootstrap/_normalize.scss */
 html {
@@ -7102,7 +7129,7 @@ button.close {
   /* line 18, ../bower_components/bootstrap-sass/assets/stylesheets/bootstrap/mixins/_responsive-visibility.scss */
   .hidden-print {
     display: none !important; } }
-/* line 9, ../sass/screen.scss */
+/* line 10, ../sass/screen.scss */
 html, body {
   height: 100%;
   width: 100%;
@@ -7110,7 +7137,7 @@ html, body {
   padding: 0px;
   overflow: hidden; }
 
-/* line 17, ../sass/screen.scss */
+/* line 18, ../sass/screen.scss */
 .menu-toggle {
   position: absolute;
   top: 5px;
@@ -7120,7 +7147,7 @@ html, body {
   font-size: 35px;
   transition: 0.5s; }
 
-/* line 27, ../sass/screen.scss */
+/* line 28, ../sass/screen.scss */
 .images img {
   width: 100%;
   max-width: 200px;
@@ -7128,14 +7155,14 @@ html, body {
   height: auto;
   overflow-y: hidden; }
 
-/* line 35, ../sass/screen.scss */
+/* line 36, ../sass/screen.scss */
 #map-canvas {
   position: relative;
   width: 100%;
   height: 100%;
   float: left; }
 
-/* line 42, ../sass/screen.scss */
+/* line 43, ../sass/screen.scss */
 .map-container {
   position: fixed;
   top: 0;
@@ -7145,7 +7172,7 @@ html, body {
   transition: 0.5s;
   padding-left: 200px; }
 
-/* line 52, ../sass/screen.scss */
+/* line 53, ../sass/screen.scss */
 .controls {
   margin-top: 16px;
   border: 1px solid transparent;
@@ -7156,7 +7183,7 @@ html, body {
   outline: none;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3); }
 
-/* line 63, ../sass/screen.scss */
+/* line 64, ../sass/screen.scss */
 #pac-input {
   background-color: #fff;
   padding: 0 11px 0 13px;
@@ -7166,7 +7193,7 @@ html, body {
   font-weight: 300;
   text-overflow: ellipsis; }
 
-/* line 75, ../sass/screen.scss */
+/* line 76, ../sass/screen.scss */
 #pac-input:focus {
   border-color: #4d90fe;
   margin-left: -1px;
@@ -7174,27 +7201,27 @@ html, body {
   /* Regular padding-left + 1. */
   width: 401px; }
 
-/* line 82, ../sass/screen.scss */
+/* line 83, ../sass/screen.scss */
 .pac-container {
   font-family: Roboto; }
 
-/* line 86, ../sass/screen.scss */
+/* line 87, ../sass/screen.scss */
 #type-selector {
   color: #fff;
   background-color: #4d90fe;
   padding: 5px 11px 0px 11px; }
 
-/* line 92, ../sass/screen.scss */
+/* line 93, ../sass/screen.scss */
 #type-selector label {
   font-family: Roboto;
   font-size: 13px;
   font-weight: 300; }
 
-/* line 98, ../sass/screen.scss */
+/* line 99, ../sass/screen.scss */
 #target {
   width: 345px; }
 
-/* line 102, ../sass/screen.scss */
+/* line 103, ../sass/screen.scss */
 form {
   position: absolute;
   top: 0;
@@ -7202,13 +7229,13 @@ form {
   width: 100%;
   height: 50px; }
 
-/* line 110, ../sass/screen.scss */
+/* line 111, ../sass/screen.scss */
 #search-term {
   width: 100%;
   height: 100%;
   text-align: center; }
 
-/* line 116, ../sass/screen.scss */
+/* line 117, ../sass/screen.scss */
 #list-view {
   position: fixed;
   top: 0;
@@ -7220,7 +7247,7 @@ form {
   transition: 0.5s;
   z-index: 1; }
 
-/* line 128, ../sass/screen.scss */
+/* line 129, ../sass/screen.scss */
 #location-list {
   padding-top: 50px;
   position: absolute;
@@ -7231,32 +7258,32 @@ form {
   width: 100%;
   overflow-y: auto;
   overflow-x: hidden; }
-  /* line 138, ../sass/screen.scss */
+  /* line 139, ../sass/screen.scss */
   #location-list li {
     width: 100%;
     text-align: center;
     background: #ffffff;
     cursor: pointer; }
-  /* line 145, ../sass/screen.scss */
+  /* line 146, ../sass/screen.scss */
   #location-list li:hover {
     background: #999999; }
 
 @media screen and (max-width: 600px) {
-  /* line 151, ../sass/screen.scss */
+  /* line 152, ../sass/screen.scss */
   #list-view {
     width: 100%; }
 
-  /* line 154, ../sass/screen.scss */
+  /* line 155, ../sass/screen.scss */
   .map-container {
     padding-left: 200px; }
 
-  /* line 157, ../sass/screen.scss */
+  /* line 158, ../sass/screen.scss */
   .menu-toggle {
     position: fixed;
     top: 5px;
     left: 0px;
     transition: 0.5s; } }
-/* line 168, ../sass/screen.scss */
+/* line 169, ../sass/screen.scss */
 .full {
   position: fixed;
   top: 0;
@@ -7265,11 +7292,11 @@ form {
   transition: 0.5s;
   padding-left: 0; }
 
-/* line 177, ../sass/screen.scss */
+/* line 178, ../sass/screen.scss */
 .hidden-left {
   transform: translateX(-100%);
   transition: 0.5s; }
 
-/* line 182, ../sass/screen.scss */
+/* line 183, ../sass/screen.scss */
 .menu-left {
   left: 0; }
