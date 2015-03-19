@@ -261,12 +261,12 @@ var ViewModel = function(){
 	 * API key for the New York Times API
 	 * @type {String}
 	 */
-	var nytAPIKey = "2bdef7d706bc8030ab9d2d31b5580154:7:70540436";
+	//var nytAPIKey = "2bdef7d706bc8030ab9d2d31b5580154:7:70540436";
 	/**
 	 * The base URL for the New York Times API
 	 * @type {String}
 	 */
-	var nytAPIURL = "http://api.nytimes.com/svc/search/v2/articlesearch.json?";
+	//var nytAPIURL = "http://api.nytimes.com/svc/search/v2/articlesearch.json?";
 
 	/**
 	 * The default image to appear when the flickr API is unable to return photos
@@ -405,7 +405,7 @@ var ViewModel = function(){
 	  	this.lng = lng;
 	  	this.count = count;
 	  	/**
-	  	 * Whether or not the location should be displayed inthe lsit and map views
+	  	 * Whether or not the location should be displayed inthe list and map views
 	  	 * @type {Boolean}
 	  	 */
 	  	this.isVisible = ko.observable(true);
@@ -494,7 +494,7 @@ var ViewModel = function(){
 		this.marker.setIcon(this.iconPath(this.count));
 	};
 
-	/** The function to be fired when a close lsit view item or map icon is clicked */
+	/** The function to be fired when a close list view item or map icon is clicked */
 	Location.prototype.open = function() {
 		if (!this.photos) {
 			this.getLocationData("bigfoot,sasquatch,yeti");
@@ -505,7 +505,7 @@ var ViewModel = function(){
 
 	/**
 	 * AJAX call to the flickr API that return photos tagged within 32 kilometers of the location that contain the tags. Adds the returned photos as properties of the location object this function is called on.
-	 * @param  {string} tags Comma seperated lsit of search terms.
+	 * @param  {string} tags Comma seperated list of search terms.
 	 */
 	Location.prototype.getLocationData = function(tags) {
 		var _location = this;
@@ -566,7 +566,10 @@ var ViewModel = function(){
 			bounds.extend(self.locations()[i].marker.getPosition());
 		}
 		self.map.fitBounds(bounds);
+		console.log("Auto zoom is: " + self.map.getZoom());
+		self.map.setZoom(self.map.getZoom() + 1);
 		self.map.setCenter(self.mapOptions.center);
+		console.log("New zoom is: " + self.map.getZoom());
 	};
 
 	/**
