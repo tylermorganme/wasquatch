@@ -490,7 +490,9 @@ var ViewModel = function(){
 				scrollTop: $('#location-list').scrollTop() + $('#location-list li').eq(this.index).offset().top -50
 			},1000);
     	}
-    	menuToggle();
+    	if ($window.width()<=600) {
+    		menuToggle();
+    	}
     	this.isOpen(!this.isOpen());
 	};
 
