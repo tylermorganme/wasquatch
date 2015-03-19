@@ -344,12 +344,16 @@ var ViewModel = function(){
 	 * Adds a click handler to open and close the sidebar, resizes the sidebar and map container, and zooms the map
 	 */
 	$('.menu-toggle span').click(function(){
-		$(this).toggleClass("icon-search").toggleClass("icon-cross");
+		menuToggle();
+		resize();
+	});
+
+	function menuToggle(){
+		$('.menu-toggle span').toggleClass("icon-search").toggleClass("icon-cross");
 		$('#list-view').toggleClass("hidden-left");
 		$('.map-container').toggleClass("full");
 		$('.menu-toggle').toggleClass("menu-left");
-		resize();
-	});
+	}
 
 	/**
 	 * Holds location objects for all of the counties and their data
@@ -367,6 +371,7 @@ var ViewModel = function(){
 		mapTypeId: google.maps.MapTypeId.ROADMAP,
 		panControl: false,
 		zoomControl: true,
+		minZoom: 6,
 		mapTypeControl: true,
 		scaleControl: true,
 		streetViewControl: true,
@@ -485,6 +490,7 @@ var ViewModel = function(){
 				scrollTop: $('#location-list').scrollTop() + $('#location-list li').eq(this.index).offset().top -50
 			},1000);
     	}
+    	menuToggle();
     	this.isOpen(!this.isOpen());
 	};
 
