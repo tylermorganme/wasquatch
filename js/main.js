@@ -2,7 +2,12 @@
  * A container to make sure that the DOM is loaded before running the ViewModel code
  */
 $(function() {
-	ko.applyBindings(new ViewModel());
+	if (typeof google !== 'object') {
+		console.log("byah!");
+		$("body").prepend($('<div id="page-error"><div><h1>Oh no!</h1><p>It appears that the Wasquatch has sabotaged our website (or more likely Google Maps is down or blocked by your firewall). Please try back later or disable your firewall.</p></div></div>'));
+	} else {
+		ko.applyBindings(new ViewModel());
+	}
 });
 
 /**
@@ -239,6 +244,7 @@ var ViewModel = function(){
 	 * An abstraction of the 'this' variable.
 	 */
 	var self = this;
+	var isGMaps = true;
 
 	/**
 	 * A template for the string used to create a flickr iamge URL.
@@ -381,11 +387,18 @@ var ViewModel = function(){
 		}
 	};
 
+	/** Check to hide images that fail to load*/
+	$( document ).on( 'error', 'img', function( e ){
+    $( this ).hide();
+	});
+
 	/**
 	 * The Google map object
 	 * @type {Map}
 	 */
 	self.map = new google.maps.Map(document.getElementById('map-canvas'),self.mapOptions);
+
+
 
 	/**
 	 * The search term that is used to filter the locations.
@@ -470,11 +483,11 @@ var ViewModel = function(){
 	 */
   	Location.prototype.iconPath = function(count) {
   		if (count > 49) {
-  			return 'http://maps.google.com/mapfiles/kml/pal3/icon37.png';
+  			return 'img/danger.png';
   		} else if (count > 0) {
-  			return 'http://maps.google.com/mapfiles/kml/pal3/icon45.png';
+  			return 'img/warning.png';
   		}
-  		return 'http://maps.google.com/mapfiles/kml/pal2/icon4.png';
+  		return 'img/forest.png';
  	 };
 
  	 /**
@@ -508,7 +521,7 @@ var ViewModel = function(){
 			this.getLocationData("bigfoot,sasquatch,yeti");
 		}
 		this.infowindow.open(self.map, this.marker);
-		this.marker.setIcon('http://maps.google.com/mapfiles/kml/pal4/icon47.png');
+		this.marker.setIcon('img/star.png');
 	};
 
 	/**
