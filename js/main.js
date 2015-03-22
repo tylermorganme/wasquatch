@@ -278,7 +278,7 @@ var ViewModel = function(){
 	 * The default image to appear when the flickr API is unable to return photos
 	 * @type {String}
 	 */
-	var defaultImage = 'http://upload.wikimedia.org/wikipedia/commons/f/f6/Swiss_National_Park_131.JPG';
+	var defaultImage = 'img/forest.jpg';
 
 	/**
 	 * The default message to appear when the flickr API is unable to return photos
@@ -386,11 +386,6 @@ var ViewModel = function(){
 			style: google.maps.ZoomControlStyle.DEFAULT
 		}
 	};
-
-	/** Check to hide images that fail to load*/
-	$( document ).on( 'error', 'img', function( e ){
-    $( this ).hide();
-	});
 
 	/**
 	 * The Google map object
@@ -517,6 +512,12 @@ var ViewModel = function(){
 
 	/** The function to be fired when a close list view item or map icon is clicked */
 	Location.prototype.open = function() {
+		for (var i = 0; i < self.locations().length; i++) {
+			var loc = self.locations()[i];
+			loc.close();
+			loc.isOpen(false);
+		}
+
 		if (!this.photos) {
 			this.getLocationData("bigfoot,sasquatch,yeti");
 		}
@@ -587,10 +588,8 @@ var ViewModel = function(){
 			bounds.extend(self.locations()[i].marker.getPosition());
 		}
 		self.map.fitBounds(bounds);
-		console.log("Auto zoom is: " + self.map.getZoom());
 		self.map.setZoom(self.map.getZoom() + 1);
 		self.map.setCenter(self.mapOptions.center);
-		console.log("New zoom is: " + self.map.getZoom());
 	};
 
 	/**
@@ -641,6 +640,7 @@ var ViewModel = function(){
 		}
 	});
 	resize();
+
 };
 
 
