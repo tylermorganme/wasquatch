@@ -258,22 +258,6 @@ var ViewModel = function(){
 	 */
 	var flickrAPIURL = 'https://api.flickr.com/services/rest/';
 
-
-	/**
-	 * TODO: Add news feed functionality
-	 */
-
-	/**
-	 * API key for the New York Times API
-	 * @type {String}
-	 */
-	//var nytAPIKey = "2bdef7d706bc8030ab9d2d31b5580154:7:70540436";
-	/**
-	 * The base URL for the New York Times API
-	 * @type {String}
-	 */
-	//var nytAPIURL = "http://api.nytimes.com/svc/search/v2/articlesearch.json?";
-
 	/**
 	 * The default image to appear when the flickr API is unable to return photos
 	 * @type {String}
