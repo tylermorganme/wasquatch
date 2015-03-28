@@ -361,6 +361,20 @@ var ViewModel = function(){
 		$('.menu-toggle').toggleClass("menu-left");
 	}
 
+	function menuHide(){
+		$('.menu-toggle span').addClass("icon-search").removeClass("icon-cross");
+		$('#list-view').addClass("hidden-left");
+		$('.map-container').addClass("full");
+		$('.menu-toggle').addClass("menu-left");
+	}
+
+	function menuShow(){
+		$('.menu-toggle span').removeClass("icon-search").addClass("icon-cross");
+		$('#list-view').removeClass("hidden-left");
+		$('.map-container').removeClass("full");
+		$('.menu-toggle').removeClass("menu-left");
+	}
+
 	/**
 	 * Holds location objects for all of the counties and their data
 	 * @type {Observable Array}
@@ -498,8 +512,10 @@ var ViewModel = function(){
 				scrollTop: $('#location-list').scrollTop() + $('#location-list li').eq(this.index).offset().top -50
 			},1000);
     	}
-    	if ($window.width()<=600) {
-    		menuToggle();
+    	if ($window.width()>=600) {
+    		menuShow();
+    	} else {
+    		menuHide();
     	}
     	this.isOpen(!this.isOpen());
 	};
